@@ -1,5 +1,3 @@
-# utils/tools.py
-
 import re
 
 def simple_calculator(query: str) -> str:

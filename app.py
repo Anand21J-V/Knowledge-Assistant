@@ -25,7 +25,7 @@ llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama-3.3-70b-versatile")
 st.set_page_config(page_title="Knowledge Assistant", layout="wide")
 st.title("Knowledge Assistant with Agentic Workflow")
 
-# Embedding logic (run once, silently)
+# Embedding logic 
 def load_vector_db():
     if "vectors" not in st.session_state:
         try:
@@ -34,20 +34,20 @@ def load_vector_db():
 
             if not os.path.exists(knowledge_base_file):
                 st.error(f"File {knowledge_base_file} does not exist.")
-                return  # Exit if the file is missing
+                return  
 
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-            loader = TextLoader(knowledge_base_file)  # Load the specific file
+            loader = TextLoader(knowledge_base_file)  
             docs = loader.load()
 
             if not docs:
                 st.error("No documents were loaded from the file.")
-                return  # Exit if no documents were loaded
+                return 
 
             splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
             split_docs = splitter.split_documents(docs)
             vector_store = FAISS.from_documents(split_docs, embeddings)
-            st.session_state.vectors = vector_store  # Initialize the vector store in session state
+            st.session_state.vectors = vector_store  # Initialising the vector store in session state
 
         except Exception as e:
             st.error(f"Error loading documents: {e}")
@@ -86,7 +86,7 @@ query = st.text_input("Ask your question here...")
 
 # Inference block
 if query:
-    load_vector_db()  # load silently if not already
+    load_vector_db()  
     decision_log = ""
 
     # Route logic

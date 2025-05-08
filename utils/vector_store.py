@@ -1,5 +1,3 @@
-# utils/vector_store.py
-
 import os
 import streamlit as st
 from dotenv import load_dotenv

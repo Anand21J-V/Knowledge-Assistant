@@ -1,5 +1,3 @@
-# utils/prompts.py
-
 from langchain_core.prompts import ChatPromptTemplate
 
 def get_rag_prompt():

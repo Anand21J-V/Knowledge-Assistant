@@ -1,5 +1,3 @@
-# services/rag_pipeline.py
-
 from langchain_groq import ChatGroq
 from langchain.chains.combine_documents import create_stuff_documents_chain
 import os
