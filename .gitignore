@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+app.py
 
 
 # Distribution / packaging
@@ -137,7 +137,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-app.py/
 
 # Spyder project settings
 .spyderproject
