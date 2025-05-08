@@ -23,6 +23,15 @@ This assistant provides three main functionalities:
 ├── data/
 │   └── data.txt                # Source file for knowledge base
 ├── requirements.txt            # Python dependencies
+├── utils/
+│   ├── __init__.py             # Initializes the utils module
+│   ├── vector_store.py         # Manages the vector store
+│   ├── tools.py                # Contains helper tools like calculator and dictionary
+│   └── prompts.py              # Contains prompt templates
+└── services/
+    ├── __init__.py             # Initializes the services module
+    └── rag_pipeline.py         # Handles the RAG pipeline logic
+
 ```
 
 ---
