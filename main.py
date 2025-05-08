@@ -22,7 +22,7 @@ if query:
         answer = simple_calculator(query)
 
     elif re.search(r"\\bdefine\\s+(\\w+)", query, re.IGNORECASE):
-        decision_log = "\U0001F4D8 Used Dictionary Tool"
+        decision_log = "Used Dictionary Tool"
         word = re.findall(r"\\bdefine\\s+(\\w+)", query, re.IGNORECASE)[0]
         answer = simple_define_tool(word)
 
