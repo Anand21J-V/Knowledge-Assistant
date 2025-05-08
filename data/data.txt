@@ -1,0 +1,17 @@
+Product: SmartHome Thermostat
+Model: T1000
+Price: $12000
+
+Features:
+- Automatic temperature control
+- WiFi-enabled remote access
+- Energy-saving mode
+- Compatible with Alexa and Google Home
+
+Installation:
+1. Connect the device to your WiFi network.
+2. Install the SmartHome app on your phone.
+3. Follow on-screen setup instructions.
+
+Warranty:
+The device includes a 2-year limited warranty covering manufacturing defects.
