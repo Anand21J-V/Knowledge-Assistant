@@ -6,3 +6,4 @@ langchain-core
 langchain-groq
 sentence-transformers
 faiss-cpu
+-e .
