@@ -2,6 +2,9 @@
 
 This project is a smart knowledge assistant built using **Streamlit** that leverages **Retrieval-Augmented Generation (RAG)** and tool-based routing to answer user queries. It uses **Llama 3.3-70B** from **Groq** as the backend language model and supports dynamic query handling—ranging from simple calculations and definitions to context-aware retrieval from a knowledge base.
 
+# Deployed on Streamlit
+https://knowledge-assistant-internshala.streamlit.app/
+
 ---
 
 ## What This App Does
