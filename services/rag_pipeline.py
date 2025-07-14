@@ -6,9 +6,9 @@ import streamlit as st
 from langchain.chains import create_retrieval_chain
 
 load_dotenv()
-groq_api_key = "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"
+groq_api_key = os.getenv("GROQ_API_KEY")
 
-llm = ChatGroq(groq_api_key=groq_api_key, model_name="Llama3-8b-8192")
+llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama-3.3-70b-versatile")
 
 def get_rag_chain(query: str, prompt):
     if "vectors" not in st.session_state:
