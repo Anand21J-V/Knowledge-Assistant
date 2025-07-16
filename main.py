@@ -1,51 +1,81 @@
-
 import streamlit as st
-from utils.vector_store import load_vector_db
-from utils.tools import simple_calculator, simple_define_tool
-from utils.prompts import get_rag_prompt
-from services.rag_pipeline import get_rag_chain
-import re
+from services.rag_pipeline import build_graph
+import time
 
-st.set_page_config(page_title="🧠 Knowledge Assistant", layout="wide")
+# Page config
+st.set_page_config(page_title="AI Assistant", layout="centered")
 
-# ===== Title Section =====
-st.markdown(
-    """
-    <div style='text-align: center; padding: 10px;'>
-        <h1 style='color: #4A90E2;'>🧠 Knowledge Assistant</h1>
-        <h4 style='color: gray;'>An Agentic AI Assistant for Answers, Definitions, and Calculations</h4>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# ---- STYLES ----
+st.markdown("""
+    <style>
+        .big-font {
+            font-size:22px !important;
+            font-weight: 600;
+        }
+        .small-font {
+            font-size:15px;
+            color: #555;
+        }
+        .stTextArea textarea {
+            font-size: 16px;
+            padding: 16px;
+            border-radius: 12px;
+        }
+        .stButton button {
+            font-size: 16px;
+            padding: 10px 30px;
+            border-radius: 8px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-st.divider()
+# ---- HEADER ----
+st.markdown("<h1 style='text-align: center;'>Knowledge Assistant</h1>", unsafe_allow_html=True)
+st.markdown("<p class='small-font' style='text-align: center;'>Ask smart questions powered by LLM + tools + vector memory</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-# ===== Input Area =====
-with st.container():
-    query = st.text_input("💬 Ask me anything...", placeholder="Try 'define quantum', or 'calculate 2+2*5'")
+# ---- INPUT ----
+query = st.text_area("💬 Ask your question:", height=160, placeholder="e.g. Define entropy, What is the price of T1000, Solve sin(1), etc.")
+submit = st.button("🚀 Get Answer")
 
-# ===== Query Handling =====
-if query:
-    load_vector_db()
-    decision_log = ""
-    
-    # Decision logic
-    if re.search(r"\b(calculate|add|subtract|multiply|divide|eval|[-+*/=])\b", query, re.IGNORECASE):
-        decision_log = "🧮 **Used Calculator Tool**"
-        answer = simple_calculator(query)
+# ---- PROCESS ----
+if submit and query:
+    with st.spinner("🧠 Thinking..."):
+        graph = build_graph()
+        start_time = time.time()
+        output = graph.invoke({"query": query})
+        end_time = time.time()
 
-    elif re.search(r"\bdefine\s+(\w+)", query, re.IGNORECASE):
-        decision_log = "📘 **Used Dictionary Tool**"
-        word = re.findall(r"\bdefine\s+(\w+)", query, re.IGNORECASE)[0]
-        answer = simple_define_tool(word)
+    st.success("✅ Answer Ready")
 
-    else:
-        decision_log = "🤖 **RAG and LLM - Knowledge Assistant Chatbot**"
-        answer = get_rag_chain(query, get_rag_prompt())
+    # ---- OUTPUT ----
+    st.markdown("### 📘 Result")
+    st.markdown(f"<div class='big-font'>{output.get('result', 'No answer available.')}</div>", unsafe_allow_html=True)
 
-    # ===== Output Section =====
-    with st.container():
-        st.markdown("---")
-        st.markdown(f"**🔍 Decision:** {decision_log}")
-        st.markdown(f"**🧾 Answer:**\n\n{answer}")
+    # ---- EXPANDABLE LOGS ----
+    with st.expander("🧾 Detailed Logs", expanded=False):
+        st.markdown("**Query Processed:**")
+        st.code(query, language="text")
+
+        st.markdown("**Tool Used:**")
+        st.code(output.get("tool", "N/A"), language="text")
+
+        if output.get("tool_output"):
+            st.markdown("**Tool Output:**")
+            st.code(output["tool_output"], language="text")
+
+        st.markdown("**Final Answer:**")
+        st.code(output.get("result", ""), language="markdown")
+
+        st.markdown("**⏱️ Time Taken:**")
+        st.code(f"{end_time - start_time:.2f} seconds", language="text")
+
+elif submit and not query:
+    st.warning("⚠️ Please enter a question to get an answer.")
+
+
+
+

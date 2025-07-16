@@ -1,32 +1,33 @@
 import os
-import streamlit as st
-from dotenv import load_dotenv
-from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.docstore.document import Document
+from langchain.text_splitter import CharacterTextSplitter
 
-load_dotenv()
+VECTOR_DIR = "vectorstore/faiss_index"
 
-def load_vector_db():
-    if "vectors" not in st.session_state:
-        try:
-            knowledge_base_file = './data/data.txt'
-            if not os.path.exists(knowledge_base_file):
-                st.error(f"File {knowledge_base_file} does not exist.")
-                return
+class VectorStore:
+    def __init__(self, file_path):
+        self.embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-            embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-            docs = TextLoader(knowledge_base_file).load()
+        # Load from disk if exists
+        if os.path.exists(os.path.join(VECTOR_DIR, "index.faiss")):
+            self.db = FAISS.load_local(VECTOR_DIR, self.embedding_model, allow_dangerous_deserialization=True)
+        else:
+            self.db = self._create_and_save_index(file_path)
 
-            if not docs:
-                st.error("No documents were loaded.")
-                return
+    def _create_and_save_index(self, file_path):
+        with open(file_path, "r") as f:
+            text = f.read()
 
-            splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-            split_docs = splitter.split_documents(docs)
-            vector_store = FAISS.from_documents(split_docs, embeddings)
-            st.session_state.vectors = vector_store
+        splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20)
+        chunks = splitter.split_text(text)
+        docs = [Document(page_content=chunk) for chunk in chunks]
 
-        except Exception as e:
-            st.error(f"Error loading documents: {e}")
+        db = FAISS.from_documents(docs, self.embedding_model)
+        db.save_local(VECTOR_DIR)
+        return db
+
+    def retrieve(self, query, k=3):
+        results = self.db.similarity_search(query, k=k)
+        return [doc.page_content for doc in results]

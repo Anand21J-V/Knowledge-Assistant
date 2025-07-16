@@ -1,11 +1,7 @@
-from langchain_core.prompts import ChatPromptTemplate
-
-def get_rag_prompt():
-    return ChatPromptTemplate.from_template("""
-Answer the question using the following context. Be concise and accurate.
-<context>
+prompt_template = """You are a helpful assistant. Use the following context to answer the user's question.
+Context:
 {context}
-</context>
 
-Question: {input}"""
-)
+Question:
+{query}
+"""

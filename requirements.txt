@@ -1,9 +1,9 @@
+langgraph
+groq
 streamlit
 python-dotenv
-langchain
-langchain-community
-langchain-core
-langchain-groq
-sentence-transformers
 faiss-cpu
+tiktoken
+sentence-transformers
+
 -e .
